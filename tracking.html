@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking Pengiriman DO - SITTA Universitas Terbuka</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header Aplikasi SITTA -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-logo-badge">UT</div>
+        <div class="brand-info">
+          <h1>SITTA UT</h1>
+          <p>Sistem Informasi Tiras & Transaksi Bahan Ajar</p>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <a href="dashboard.html" class="nav-link">🏠 Beranda</a>
+        <a href="stok.html" class="nav-link">📚 Informasi Bahan Ajar</a>
+        <a href="tracking.html" class="nav-link active">🚚 Tracking Pengiriman</a>
+      </nav>
+
+      <div class="user-profile-header">
+        <div class="user-avatar" id="headerUserAvatar">R</div>
+        <div class="user-meta">
+          <div class="user-name" id="headerUserName">Rina Wulandari</div>
+          <span class="user-role" id="headerUserRole">UPBJJ-UT Jakarta</span>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Konten Utama Tracking -->
+  <main class="main-wrapper">
+    <div style="margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.5rem; color: var(--primary);">Lacak Status Pengiriman Bahan Ajar (DO)</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Masukkan nomor Delivery Order (DO) untuk melacak posisi pengiriman Buku Materi Pokok (BMP) secara langsung.
+      </p>
+    </div>
+
+    <!-- Kotak Form Pencarian DO -->
+    <section class="tracking-search-card">
+      <form id="trackingSearchForm" onsubmit="event.preventDefault();" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 280px;">
+          <input 
+            type="text" 
+            id="inputNomorDO" 
+            class="form-control" 
+            placeholder="Ketik Nomor Delivery Order (misal: 2023001234)..."
+            style="font-size: 1rem; padding: 0.75rem 1rem;"
+            autofocus
+          >
+        </div>
+        <button type="button" id="btnCariDO" class="btn btn-primary" style="padding: 0.75rem 1.75rem; font-size: 1rem;">
+          🔍 Lacak DO
+        </button>
+      </form>
+
+      <!-- Saran Cepat DO Uji Coba -->
+      <div style="margin-top: 0.85rem; font-size: 0.82rem; color: var(--text-muted);">
+        <span>💡 Nomor DO Contoh Uji Coba: </span>
+        <a href="javascript:void(0)" onclick="fillSampleDO('2023001234')" style="text-decoration: underline; font-weight: 600; margin-right: 12px;">
+          2023001234 (Dalam Perjalanan - JNE)
+        </a>
+        <a href="javascript:void(0)" onclick="fillSampleDO('2023005678')" style="text-decoration: underline; font-weight: 600;">
+          2023005678 (Dikirim Selesai - Pos Indonesia)
+        </a>
+      </div>
+    </section>
+
+    <!-- Hasil Pelacakan Pengiriman (Tampil Dinamis via DOM) -->
+    <section id="trackingResultBox" class="tracking-result-box">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📦</span> Rincian Paket Delivery Order: <strong id="resNomorDO">-</strong>
+          </div>
+          <div>
+            <span id="resStatusBadge" class="badge badge-warning">Memuat Status...</span>
+          </div>
+        </div>
+
+        <!-- Grid Ringkasan Informasi Paket -->
+        <div class="tracking-meta-grid">
+          <div class="tracking-meta-item">
+            <div class="meta-label">Nama Mahasiswa / Penerima</div>
+            <div class="meta-value" id="resNama">-</div>
+          </div>
+          <div class="tracking-meta-item">
+            <div class="meta-label">Penyedia Ekspedisi</div>
+            <div class="meta-value" id="resEkspedisi">-</div>
+          </div>
+          <div class="tracking-meta-item">
+            <div class="meta-label">Tanggal Pengiriman</div>
+            <div class="meta-value" id="resTanggal">-</div>
+          </div>
+          <div class="tracking-meta-item">
+            <div class="meta-label">Kode Paket / Lokasi</div>
+            <div class="meta-value" id="resPaket">-</div>
+          </div>
+          <div class="tracking-meta-item">
+            <div class="meta-label">Total Pembayaran / Ongkir</div>
+            <div class="meta-value" style="color: var(--primary);" id="resTotal">-</div>
+          </div>
+        </div>
+
+        <!-- Visual Stepper Progress Bar -->
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Indikator Progres Distribusi:</h4>
+        <div class="stepper-wrapper" id="stepperContainer">
+          <!-- Item Stepper di-generate secara dinamis oleh app.js -->
+        </div>
+
+        <!-- Timeline Riwayat Perjalanan -->
+        <h4 style="font-size: 1rem; margin-top: 2rem; margin-bottom: 0.5rem; color: var(--primary);">
+          Catatan Riwayat Checkpoint Perjalanan:
+        </h4>
+        <div class="timeline" id="trackingTimeline">
+          <!-- Timeline items di-generate oleh app.js -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p><strong>SITTA - Sistem Informasi Tiras dan Transaksi Bahan Ajar</strong> &copy; 2026 Universitas Terbuka</p>
+    <p style="margin-top: 4px; font-size: 0.75rem;">Dikembangkan oleh: <strong>Daffa Tabiano</strong> (NIM: 053134745) • Program Studi Sistem Informasi</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

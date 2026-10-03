@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informasi Stok Bahan Ajar - SITTA Universitas Terbuka</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header Aplikasi SITTA -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="brand-logo-badge">UT</div>
+        <div class="brand-info">
+          <h1>SITTA UT</h1>
+          <p>Sistem Informasi Tiras & Transaksi Bahan Ajar</p>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <a href="dashboard.html" class="nav-link">🏠 Beranda</a>
+        <a href="stok.html" class="nav-link active">📚 Informasi Bahan Ajar</a>
+        <a href="tracking.html" class="nav-link">🚚 Tracking Pengiriman</a>
+      </nav>
+
+      <div class="user-profile-header">
+        <div class="user-avatar" id="headerUserAvatar">R</div>
+        <div class="user-meta">
+          <div class="user-name" id="headerUserName">Rina Wulandari</div>
+          <span class="user-role" id="headerUserRole">UPBJJ-UT Jakarta</span>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Konten Utama Stok Bahan Ajar -->
+  <main class="main-wrapper">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+      <div>
+        <h2 style="font-size: 1.5rem; color: var(--primary);">Katalog & Stok Bahan Ajar (BMP)</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Pemantauan ketersediaan tiras Buku Materi Pokok secara real-time di seluruh unit kerja UT.
+        </p>
+      </div>
+      <div>
+        <button class="btn btn-secondary" onclick="openModal('tambahStokModal')">
+          ➕ Tambah Bahan Ajar Baru
+        </button>
+      </div>
+    </div>
+
+    <!-- Toolbar Pencarian & Filter Lokasi -->
+    <div class="toolbar-container">
+      <div class="search-box">
+        <span style="font-size: 1.1rem; color: var(--text-muted);">🔍</span>
+        <input 
+          type="text" 
+          id="searchStokInput" 
+          class="form-control" 
+          placeholder="Cari nama mata kuliah atau kode barang..."
+        >
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <label for="filterLokasi" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Filter Lokasi:</label>
+        <select id="filterLokasi" class="form-control" style="width: auto; min-width: 170px;">
+          <option value="">Semua Lokasi</option>
+          <option value="0TMP01">0TMP01 - Gudang Transit Pusat</option>
+          <option value="0JKT01">0JKT01 - UPBJJ Jakarta</option>
+          <option value="0SBY02">0SBY02 - UPBJJ Surabaya</option>
+          <option value="0MLG01">0MLG01 - UPBJJ Malang</option>
+          <option value="0UPBJJBDG">0UPBJJBDG - UPBJJ Bandung</option>
+        </select>
+
+        <span id="countTotalItem" class="badge badge-info" style="font-size: 0.82rem; padding: 0.45rem 0.75rem;">
+          5 Judul Buku
+        </span>
+      </div>
+    </div>
+
+    <!-- Tabel Data Stok Bahan Ajar -->
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 45px; text-align: center;">No.</th>
+            <th style="width: 80px; text-align: center;">Cover</th>
+            <th style="width: 110px;">Kode Lokasi</th>
+            <th style="width: 120px;">Kode Barang</th>
+            <th>Nama Bahan Ajar / Mata Kuliah</th>
+            <th style="width: 110px; text-align: center;">Jumlah Stok</th>
+            <th style="width: 120px; text-align: center;">Status Ketersediaan</th>
+            <th style="width: 110px; text-align: center;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="stokTableBody">
+          <!-- Di-render secara dinamis dari data.js menggunakan JavaScript DOM -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- MODAL BOX: FORM TAMBAH BAHAN AJAR BARU -->
+  <div id="tambahStokModal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Tambah Bahan Ajar Baru</h3>
+        <button class="modal-close" onclick="closeModal('tambahStokModal')">&times;</button>
+      </div>
+      <form id="formTambahStok">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="addKodeLokasi" class="form-label">Kode Lokasi Gudang</label>
+              <select id="addKodeLokasi" class="form-control" required>
+                <option value="0JKT01">0JKT01 - UPBJJ Jakarta</option>
+                <option value="0TMP01">0TMP01 - Gudang Transit Pusat</option>
+                <option value="0SBY02">0SBY02 - UPBJJ Surabaya</option>
+                <option value="0MLG01">0MLG01 - UPBJJ Malang</option>
+                <option value="0UPBJJBDG">0UPBJJBDG - UPBJJ Bandung</option>
+                <option value="0MKS01">0MKS01 - UPBJJ Makassar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addKodeBarang" class="form-label">Kode Barang / Mata Kuliah</label>
+              <input type="text" id="addKodeBarang" class="form-control" placeholder="contoh: STSI4209" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="addNamaBarang" class="form-label">Nama Bahan Ajar / Judul Buku</label>
+            <input type="text" id="addNamaBarang" class="form-control" placeholder="contoh: Pemrograman Berbasis Web" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="addJenisBarang" class="form-label">Jenis Barang</label>
+              <select id="addJenisBarang" class="form-control">
+                <option value="BMP">BMP (Buku Materi Pokok)</option>
+                <option value="Modul Praktik">Modul Praktik</option>
+                <option value="Buku Panduan">Buku Panduan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addEdisi" class="form-label">Edisi ke-</label>
+              <input type="text" id="addEdisi" class="form-control" placeholder="contoh: 1" required>
+            </div>
+            <div class="form-group">
+              <label for="addStok" class="form-label">Jumlah Stok Awal</label>
+              <input type="number" id="addStok" class="form-control" min="0" placeholder="contoh: 250" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="addCoverSelect" class="form-label">Pilih Gambar Cover Bahan Ajar</label>
+            <select id="addCoverSelect" class="form-control">
+              <option value="img/manajemen_keuangan.jpg">Cover: Manajemen Keuangan</option>
+              <option value="img/mikrobiologi.jpg">Cover: Mikrobiologi Dasar</option>
+              <option value="img/pengantar_komunikasi.jpg">Cover: Pengantar Ilmu Komunikasi</option>
+              <option value="img/kepemimpinan.jpg">Cover: Kepemimpinan</option>
+              <option value="img/paud_perkembangan.jpg">Cover: Perkembangan Anak Usia Dini</option>
+            </select>
+            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+              Gambar diambil dari folder aset bawaan tugas <code>img/</code>.
+            </small>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('tambahStokModal')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan ke Katalog</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p><strong>SITTA - Sistem Informasi Tiras dan Transaksi Bahan Ajar</strong> &copy; 2026 Universitas Terbuka</p>
+    <p style="margin-top: 4px; font-size: 0.75rem;">Dikembangkan oleh: <strong>Daffa Tabiano</strong> (NIM: 053134745) • Program Studi Sistem Informasi</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
